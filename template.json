@@ -1,0 +1,141 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "type": "string"
+        },
+        "serverFarmResourceGroup": {
+            "type": "string"
+        },
+        "alwaysOn": {
+            "type": "bool"
+        },
+        "use32BitWorkerProcess": {
+            "type": "bool"
+        },
+        "ftpsState": {
+            "type": "string"
+        },
+        "storageAccountName": {
+            "type": "string"
+        },
+        "netFrameworkVersion": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        },
+        "skuCode": {
+            "type": "string"
+        },
+        "workerSize": {
+            "type": "string"
+        },
+        "workerSizeId": {
+            "type": "string"
+        },
+        "numberOfWorkers": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/sites",
+            "kind": "functionapp",
+            "location": "[parameters('location')]",
+            "tags": {
+                "hidden-link: /app-insights-resource-id": "/subscriptions/b154ce63-1c54-4e89-a530-fde4493d04d7/resourceGroups/ankitanew/providers/Microsoft.Insights/components/ankitanewfun"
+            },
+            "dependsOn": [
+                "microsoft.insights/components/ankitanewfun",
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('name')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~4"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference('microsoft.insights/components/ankitanewfun', '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                            "value": "[reference('microsoft.insights/components/ankitanewfun', '2015-05-01').ConnectionString]"
+                        },
+                        {
+                            "name": "AzureWebJobsSecretStorageType",
+                            "value": "files"
+                        }
+                    ],
+                    "cors": {
+                        "allowedOrigins": [
+                            "https://portal.azure.com"
+                        ]
+                    },
+                    "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
+                    "ftpsState": "[parameters('ftpsState')]",
+                    "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
+                },
+                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "clientAffinityEnabled": false,
+                "virtualNetworkSubnetId": null,
+                "httpsOnly": true
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location')]",
+            "kind": "",
+            "tags": null,
+            "dependsOn": [],
+            "properties": {
+                "name": "[parameters('hostingPlanName')]",
+                "workerSize": "[parameters('workerSize')]",
+                "workerSizeId": "[parameters('workerSizeId')]",
+                "numberOfWorkers": "[parameters('numberOfWorkers')]"
+            },
+            "sku": {
+                "Tier": "[parameters('sku')]",
+                "Name": "[parameters('skuCode')]"
+            }
+        },
+        {
+            "apiVersion": "2020-02-02-preview",
+            "name": "ankitanewfun",
+            "type": "microsoft.insights/components",
+            "location": "centralus",
+            "tags": null,
+            "dependsOn": [],
+            "properties": {
+                "ApplicationId": "[parameters('name')]",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "Flow_Type": "Redfield",
+                "Application_Type": "web",
+                "WorkspaceResourceId": "/subscriptions/b154ce63-1c54-4e89-a530-fde4493d04d7/resourceGroups/DefaultResourceGroup-CUS/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-b154ce63-1c54-4e89-a530-fde4493d04d7-CUS"
+            }
+        }
+    ]
+}
