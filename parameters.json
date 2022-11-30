@@ -6,16 +6,16 @@
             "value": "b154ce63-1c54-4e89-a530-fde4493d04d7"
         },
         "name": {
-            "value": "ankitanewfnapp"
+            "value": "httpfnapp"
         },
         "location": {
-            "value": "Central US"
+            "value": "East US"
         },
         "hostingPlanName": {
-            "value": "ASP-ankitanew-b6e7"
+            "value": "ASP-httpfnapp-b6e7"
         },
         "serverFarmResourceGroup": {
-            "value": "ankitanewfnapp"
+            "value": "fnapprg"
         },
         "alwaysOn": {
             "value": false
